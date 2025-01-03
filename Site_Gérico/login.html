@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérico - Connexion</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <img src="logo.png" alt="Logo Gérico" class="login-logo">
+            
+            <!-- Sélecteur de type de connexion -->
+            <div class="login-type-selector">
+                <button class="login-type-btn active" onclick="showLoginForm('employee')">Employé</button>
+                <button class="login-type-btn" onclick="showLoginForm('admin')">Admin</button>
+            </div>
+
+            <!-- Formulaire Employé -->
+            <form id="employee-login" class="login-form" action="/employee-login" method="POST">
+                <h2>Connexion Employé</h2>
+                <input type="text" placeholder="Identifiant" required>
+                <input type="password" placeholder="Mot de passe" required>
+                <button type="submit">Se connecter</button>
+            </form>
+
+            <!-- Formulaire Admin -->
+            <form id="admin-login" class="login-form hidden" action="/admin-login" method="POST">
+                <h2>Connexion Admin</h2>
+                <input type="text" placeholder="Identifiant admin" required>
+                <input type="password" placeholder="Mot de passe admin" required>
+                <button type="submit">Se connecter</button>
+            </form>
+
+            <a href="index.html" class="return-home">Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <script>
+        function showLoginForm(type) {
+            const employeeForm = document.getElementById('employee-login');
+            const adminForm = document.getElementById('admin-login');
+            const buttons = document.querySelectorAll('.login-type-btn');
+
+            if (type === 'employee') {
+                employeeForm.classList.remove('hidden');
+                adminForm.classList.add('hidden');
+            } else {
+                employeeForm.classList.add('hidden');
+                adminForm.classList.remove('hidden');
+            }
+
+            // Update active button
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(type)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

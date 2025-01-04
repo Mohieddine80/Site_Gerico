@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérico - Espace Employé</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <div class="employee-container">
+        <!-- Header -->
+        <header class="employee-header">
+            <div class="header-left">
+                <img src="logo.png" alt="Logo Gérico" class="logo">
+                <span class="welcome-text">Bienvenue <span id="employeeName"> sur votre espace personnel </span></span>
+            </div>
+            <a href="index.html" class="logout-btn">Déconnexion</a>
+        </header>
+
+        <!-- Contenu Espace Employé -->
+        <div class="employee-dashboard">
+
+            <!-- Section fiche de paie-->
+            <div class="dashboard-card payslips-card">
+                <h2>Mes fiches de paie</h2>
+                <div class="payslips-list">
+                    <div class="payslip-item">
+                        <span class="payslip-date">Janvier 2025</span>
+                        <div class="payslip-actions">
+                            <button class="payslip-btn download" onclick="downloadPayslip('202501')">
+                                Télécharger
+                            </button>
+                            <button class="payslip-btn print" onclick="printPayslip('202501')">
+                                Imprimer
+                            </button>
+                        </div>
+                    </div>
+                    <div class="payslip-item">
+                        <span class="payslip-date">Décembre 2024</span>
+                        <div class="payslip-actions">
+                            <button class="payslip-btn download" onclick="downloadPayslip('202412')">
+                                Télécharger
+                            </button>
+                            <button class="payslip-btn print" onclick="printPayslip('202412')">
+                                Imprimer
+                            </button>
+                        </div>
+                    </div>
+                    <div class="payslip-item">
+                        <span class="payslip-date">Novembre 2024</span>
+                        <div class="payslip-actions">
+                            <button class="payslip-btn download" onclick="downloadPayslip('202411')">
+                                Télécharger
+                            </button>
+                            <button class="payslip-btn print" onclick="printPayslip('202411')">
+                                Imprimer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <h2>Déposer une demande de congé</h2>
+                <form id="leaveForm" class="leave-form">
+                    <div class="form-group">
+                        <label>Date de début</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date de fin</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Type de congé</label>
+                        <select id="leaveType" required>
+                            <option value="">Sélectionnez un type</option>
+                            <option value="paid">Congés payés</option>
+                            <option value="unpaid">Congés non payés</option>
+                            <option value="sick">Arrêt maladie</option>
+                            <option value="other">Autre</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Commentaire</label>
+                        <textarea id="comment" placeholder="Commentaire optionnel"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Envoyer la demande</button>
+                </form>
+            </div>
+            
+            <!-- Modifiez la section historique des demandes -->
+            <div class="dashboard-card">
+                <h2>Mes demandes de congés</h2>
+                <div id="leaveHistory" class="leave-history">
+                    <!-- Les demandes existantes restent ici -->
+                    <div class="leave-request pending">
+                        <div class="request-header">
+                            <span class="dates">20/12/2024 - 27/12/2024</span>
+                            <span class="status">En attente</span>
+                        </div>
+                        <div class="request-type">Congés payés</div>
+                    </div>
+                    <!-- ... autres demandes existantes ... -->
+                </div>
+            </div>
+
+    <script>
+        window.jsPDF = window.jspdf.jsPDF;
+        
+        function formatMoney(amount) {
+            return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(amount);
+        }
+        
+        function generatePayslip(period) {
+            // Création d'un nouveau document PDF
+            const doc = new jsPDF();
+            
+            // En-tête
+            doc.setFontSize(22);
+            doc.text("GÉRICO TRANSPORT", 105, 20, { align: "center" });
+            
+            doc.setFontSize(16);
+            doc.text("Fiche de paie", 105, 30, { align: "center" });
+            
+            // Période
+            doc.setFontSize(12);
+            doc.text(`Période : ${period}`, 105, 40, { align: "center" });
+            
+            // Informations de l'entreprise
+            doc.setFontSize(10);
+            const companyInfo = [
+                "GÉRICO TRANSPORT",
+                "15 rue des transports",
+                "Lille",
+                "SIRET: 123 456 789 00001",
+            ];
+            companyInfo.forEach((line, index) => {
+                doc.text(line, 20, 50 + (index * 5));
+            });
+            
+            // Informations de l'employé (exemple)
+            const employeeInfo = [
+                "Employé: Jean Dupont",
+                "Matricule: EMP123",
+                "Poste: Chauffeur routier",
+            ];
+            employeeInfo.forEach((line, index) => {
+                doc.text(line, 120, 50 + (index * 5));
+            });
+            
+            // Tableau des revenus
+            const revenusData = [
+                ["Salaire de base", formatMoney(2500)],
+                ["Prime d'ancienneté", formatMoney(150)],
+                ["Prime de performance", formatMoney(200)],
+                ["Heures supplémentaires", formatMoney(320)],
+            ];
+            
+            doc.autoTable({
+                startY: 80,
+                head: [["REVENUS", "MONTANT"]],
+                body: revenusData,
+                theme: 'grid',
+                headStyles: { fillColor: [24, 25, 31] },
+            });
+            
+            // Tableau des déductions
+            const deductionsData = [
+                ["Cotisations sociales", formatMoney(-520)],
+                ["Mutuelle", formatMoney(-80)],
+                ["Retraite complémentaire", formatMoney(-150)],
+            ];
+            
+            doc.autoTable({
+                startY: doc.previousAutoTable.finalY + 10,
+                head: [["DÉDUCTIONS", "MONTANT"]],
+                body: deductionsData,
+                theme: 'grid',
+                headStyles: { fillColor: [24, 25, 31] },
+            });
+            
+            // Total net
+            const totalNet = 2500 + 150 + 200 + 320 - 520 - 80 - 150;
+            doc.setFontSize(12);
+            doc.text(`NET À PAYER : ${formatMoney(totalNet)}`, 105, doc.previousAutoTable.finalY + 20, { align: "center" });
+            
+            // Pied de page
+            doc.setFontSize(8);
+            doc.text("Document généré automatiquement - Merci de conserver ce bulletin de paie", 105, 280, { align: "center" });
+            
+            // Téléchargement du PDF
+            doc.save(`fiche-paie-${period}.pdf`);
+        }
+        
+        // Modification de la fonction downloadPayslip existante
+        function downloadPayslip(period) {
+            generatePayslip(period);
+        }
+        
+        // Modification de la fonction printPayslip existante
+        function printPayslip(period) {
+            const doc = generatePayslip(period);
+            doc.autoPrint();
+            doc.output('dataurlnewwindow');
+        }
+        </script>
+
+<script>
+    document.getElementById('leaveForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Récupération des valeurs du formulaire
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const leaveType = document.getElementById('leaveType');
+        const comment = document.getElementById('comment').value;
+    
+        // Formatage des dates pour l'affichage
+        const formatDate = (dateStr) => {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('fr-FR');
+        };
+    
+        // Création du nouvel élément de demande
+        const newRequest = document.createElement('div');
+        newRequest.className = 'leave-request pending';
+        
+        // Type de congé en français
+        const leaveTypeText = {
+            'paid': 'Congés payés',
+            'unpaid': 'Congés non payés',
+            'sick': 'Arrêt maladie',
+            'other': 'Autre'
+        }[leaveType.value];
+    
+        newRequest.innerHTML = `
+            <div class="request-header">
+                <span class="dates">${formatDate(startDate)} - ${formatDate(endDate)}</span>
+                <span class="status">En attente</span>
+            </div>
+            <div class="request-type">${leaveTypeText}</div>
+            ${comment ? `<div class="comment">${comment}</div>` : ''}
+        `;
+    
+        // Ajout de la nouvelle demande au début de l'historique
+        const leaveHistory = document.getElementById('leaveHistory');
+        leaveHistory.insertBefore(newRequest, leaveHistory.firstChild);
+    
+        // Réinitialisation du formulaire
+        this.reset();
+    
+        // Message de confirmation
+        alert('Votre demande de congés a été enregistrée avec succès !');
+    });
+    </script>
+</body>
+</html>

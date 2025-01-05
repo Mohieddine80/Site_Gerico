@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérico - Administration</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Administration Gérico</h1>
+            <button onclick="logout()" class="logout-btn">Déconnexion</button>
+        </div>
+
+        <div class="admin-nav">
+            <button onclick="showSection('newEmployee')" class="active">Nouveau salarié</button>
+            <button onclick="showSection('modifyEmployee')">Modifier salarié</button>
+            <button onclick="showSection('archiveEmployee')">Archiver salarié</button>
+            <button onclick="showSection('payslipAlerts')">Alertes fiches de paie</button>
+            <button onclick="showSection('leaveReminders')">Relances congés</button>
+        </div>
+
+        <!-- Section Nouveau salarié -->
+        <div id="newEmployee" class="admin-section">
+            <h2>Création d'un nouveau salarié</h2>
+            <form onsubmit="createEmployee(event)" class="form-grid">
+                <input type="text" placeholder="Nom" required>
+                <input type="text" placeholder="Prénom" required>
+                <input type="email" placeholder="Email" required>
+                <input type="text" placeholder="Poste" required>
+                <input type="date" placeholder="Date d'entrée" required>
+                <input type="text" placeholder="Service" required>
+                <button type="submit">Créer le salarié</button>
+            </form>
+        </div>
+
+        <!-- Section Modifier salarié -->
+        <div id="modifyEmployee" class="admin-section" style="display: none;">
+            <h2>Modification d'un salarié</h2>
+            <select onchange="loadEmployeeData(this.value)" class="full-width">
+                <option value="">Sélectionner un salarié</option>
+                <!-- Options dynamiques -->
+            </select>
+            <form onsubmit="updateEmployee(event)" class="form-grid">
+                <!-- Formulaire similaire à la création -->
+            </form>
+        </div>
+
+        <!-- Section Archiver salarié -->
+        <div id="archiveEmployee" class="admin-section" style="display: none;">
+            <h2>Archivage d'un salarié</h2>
+            <table class="employee-list">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Service</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Lignes dynamiques -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Section Alertes fiches de paie -->
+        <div id="payslipAlerts" class="admin-section" style="display: none;">
+            <h2>Alertes des fiches de paie</h2>
+            <div class="alert alert-info">
+                Nouvelle fiche déposée pour Martin Dupont - Service Comptabilité
+            </div>
+            <!-- Autres alertes -->
+        </div>
+
+        <!-- Section Relances congés -->
+        <div id="leaveReminders" class="admin-section" style="display: none;">
+            <h2>Relances des congés</h2>
+            <div class="alert alert-warning">
+                Rappel : 3 salariés n'ont pas déposé leurs congés pour le mois prochain
+            </div>
+            <!-- Liste des relances -->
+        </div>
+    </div>
+
+    <script>
+        function showSection(sectionId) {
+            // Cacher toutes les sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            // Afficher la section sélectionnée
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Mettre à jour le bouton actif
+            document.querySelectorAll('.admin-nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function createEmployee(event) {
+            event.preventDefault();
+            // Logique de création d'employé
+            alert('Employé créé avec succès');
+        }
+
+        function updateEmployee(event) {
+            event.preventDefault();
+            // Logique de mise à jour
+            alert('Employé mis à jour avec succès');
+        }
+
+        function archiveEmployee(employeeId) {
+            // Logique d'archivage
+            confirm('Êtes-vous sûr de vouloir archiver cet employé ?');
+        }
+
+        function logout() {
+            window.location.href = 'login.html';
+        }
+
+        // Chargement initial des données
+        window.onload = function() {
+            // Charger les données nécessaires
+        }
+    </script>
+</body>
+</html>
